@@ -12,7 +12,7 @@ public class Generators {
         );
     }
     public static List<Guest> GenerateGuests(int n) {
-        List<Guest> guests = new ArrayList<>();
+        List<Guest> guests = new LinkedList<>();
         String[] groups = {"family","friends","neighbors","coworkers"};
         for(int i=1;i<=n;i++){
             guests.add(new Guest("Guest"+i, groups[i%groups.length]));
