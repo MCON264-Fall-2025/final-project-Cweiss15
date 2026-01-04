@@ -1,18 +1,18 @@
 package edu.course.eventplanner;
 
 import edu.course.eventplanner.model.Guest;
+import edu.course.eventplanner.model.Task;
 import edu.course.eventplanner.service.GuestListManager;
+import edu.course.eventplanner.service.TaskManager;
 import edu.course.eventplanner.util.Generators;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         GuestListManager guestListManager = new GuestListManager();
-
+        TaskManager taskManager = new TaskManager();
         int choice = menu(input);
         switch (choice) {
             case 1: {
@@ -34,19 +34,48 @@ public class Main {
                 break;
             }
             case 6: {
+                addTask(input, taskManager);
                 break;
             }
             case 7: {
+                completeTask(taskManager);
                 break;
             }
             case 8: {
+                undoTask(taskManager);
                 break;
             }
             case 9: {
                 break;
             }
+            default: {
+                System.out.println("Goodbye!");
+                break;
+            }
         }
 
+    }
+
+    private static void undoTask(TaskManager taskManager) {
+        Task task = taskManager.undoLastTask();
+        if(task == null)
+            System.out.println("There are no tasks currently completed.");
+        System.out.println(task + " has been marked as undone and moved back from completed to your to do list.\nYou got this!");
+    }
+
+    private static void completeTask(TaskManager taskManager) {
+        Task task = taskManager.executeNextTask();
+        if (task == null) {
+            System.out.println("Your to do list is currently empty. Hurray!");
+        }
+        System.out.println(task + " has been successfully moved from to do to completed list. Nice job!");
+    }
+
+    private static void addTask(Scanner input, TaskManager taskManager) {
+        System.out.println("Enter task description to add to task list: ");
+        String task = input.nextLine();
+        Task newTask = new Task(task);
+        taskManager.addTask(newTask);
     }
 
     public static int menu(Scanner input) {
@@ -102,4 +131,5 @@ public class Main {
             }
         }
     }
+
 }
