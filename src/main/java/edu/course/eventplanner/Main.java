@@ -2,8 +2,10 @@ package edu.course.eventplanner;
 
 import edu.course.eventplanner.model.Guest;
 import edu.course.eventplanner.model.Task;
+import edu.course.eventplanner.model.Venue;
 import edu.course.eventplanner.service.GuestListManager;
 import edu.course.eventplanner.service.TaskManager;
+import edu.course.eventplanner.service.VenueSelector;
 import edu.course.eventplanner.util.Generators;
 
 import java.util.*;
@@ -13,6 +15,13 @@ public class Main {
         Scanner input = new Scanner(System.in);
         GuestListManager guestListManager = new GuestListManager();
         TaskManager taskManager = new TaskManager();
+        List<Venue> venues = Generators.generateVenues();
+        VenueSelector venueSelector = new VenueSelector(venues);
+        System.out.println("Please enter how many guests will be attending you event: ");
+        int guestCount = input.nextInt();
+        input.nextLine();
+        System.out.println("Please enter your budget for your event: ");;
+        double budget = input.nextDouble();
         int choice = menu(input);
         switch (choice) {
             case 1: {
@@ -28,6 +37,7 @@ public class Main {
                 break;
             }
             case 4: {
+                selectVenue(venueSelector, budget, guestCount);
                 break;
             }
             case 5: {
@@ -54,6 +64,15 @@ public class Main {
             }
         }
 
+    }
+
+    private static void selectVenue(VenueSelector venueSelector, double budget, int guestCount) {
+        Venue optimal = venueSelector.selectVenue(budget, guestCount);
+        if (optimal == null) {
+            System.out.println("We're sorry, there is no venue large enough for your guest list and in your budget.");
+        }
+        else
+            System.out.println("The best venue for your budget and guest list is " + optimal.getName() + ", its capacity is " + optimal.getCapacity() + " and the total cost is " + optimal.getCost() + ".");
     }
 
     private static void undoTask(TaskManager taskManager) {
@@ -104,7 +123,6 @@ public class Main {
 
     public static void loadSampleData(Scanner input) {
         Generators.GenerateGuests(getGuestCnt(input));
-        Generators.generateVenues();
     }
 
     public static void addGuest(GuestListManager guestListManager, Scanner input) {
