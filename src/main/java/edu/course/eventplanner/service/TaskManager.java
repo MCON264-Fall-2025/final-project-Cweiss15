@@ -24,7 +24,10 @@ public class TaskManager {
     }
 
     public Task undoLastTask() {
-       return completed.pop();
+        if(completed.isEmpty()) {
+            return null;
+        }
+        return completed.pop();
 
     }
 
