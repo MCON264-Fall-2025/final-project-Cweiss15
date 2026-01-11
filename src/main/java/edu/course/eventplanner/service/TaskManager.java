@@ -24,21 +24,8 @@ public class TaskManager {
     }
 
     public Task undoLastTask() {
-        if (completed.isEmpty()) {
-            return null;
-        }
-        Task task = completed.pop();
-        if (upcoming.isEmpty()) {
-            upcoming.add(task);
-        }
-        else {
-            Queue newToDo = new LinkedList<>();
-            newToDo.add(task);
-            newToDo.addAll(upcoming);
-            upcoming.clear();
-            upcoming.addAll(newToDo);
-        }
-        return task;
+       return completed.pop();
+
     }
 
     public int remainingTaskCount() {
