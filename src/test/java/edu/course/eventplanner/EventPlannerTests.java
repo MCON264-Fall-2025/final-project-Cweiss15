@@ -83,7 +83,7 @@ public class EventPlannerTests {
         taskManager.undoLastTask();
         assertEquals(1, tasks.size());
         assertTrue(done.isEmpty());
-        assertEquals(task, tasks.poll());
+        assertEquals(task2, tasks.poll());
     }
 
     @Test
