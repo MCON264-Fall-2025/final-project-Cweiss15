@@ -10,6 +10,7 @@ public class GuestListManager {
 
     public void addGuest(Guest guest) {
         guests.add(guest);
+        guestByName.put(guest.getName(), guest);
     }
 
     public boolean removeGuest(String guestName) {
