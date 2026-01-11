@@ -28,7 +28,16 @@ public class TaskManager {
             return null;
         }
         Task task = completed.pop();
-        upcoming.add(task);
+        if (upcoming.isEmpty()) {
+            upcoming.add(task);
+        }
+        else {
+            Queue newToDo = new LinkedList<>();
+            newToDo.add(task);
+            newToDo.addAll(upcoming);
+            upcoming.clear();
+            upcoming.addAll(newToDo);
+        }
         return task;
     }
 
