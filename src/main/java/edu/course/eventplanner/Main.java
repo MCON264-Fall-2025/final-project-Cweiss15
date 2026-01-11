@@ -4,6 +4,7 @@ import edu.course.eventplanner.model.Guest;
 import edu.course.eventplanner.model.Task;
 import edu.course.eventplanner.model.Venue;
 import edu.course.eventplanner.service.GuestListManager;
+import edu.course.eventplanner.service.SeatingPlanner;
 import edu.course.eventplanner.service.TaskManager;
 import edu.course.eventplanner.service.VenueSelector;
 import edu.course.eventplanner.util.Generators;
@@ -13,19 +14,26 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
+        Venue venue = null;
+        Map<Integer, List<Guest>> seatingMap = null;
         GuestListManager guestListManager = new GuestListManager();
         TaskManager taskManager = new TaskManager();
         List<Venue> venues = Generators.generateVenues();
         VenueSelector venueSelector = new VenueSelector(venues);
+        int choice=0;
+
         System.out.println("Please enter how many guests will be attending you event: ");
         int guestCount = input.nextInt();
         input.nextLine();
-        System.out.println("Please enter your budget for your event: ");;
+        System.out.println("Please enter your budget for your event: ");
         double budget = input.nextDouble();
-        int choice = menu(input);
+        input.nextLine();
+
+        while (choice!=-1) {
+        choice = menu(input);
         switch (choice) {
             case 1: {
-                loadSampleData(input);
+                loadSampleData(input, guestCount);
                 break;
             }
             case 2: {
@@ -37,10 +45,11 @@ public class Main {
                 break;
             }
             case 4: {
-                selectVenue(venueSelector, budget, guestCount);
+                venue = selectVenue(venueSelector, budget, guestCount);
                 break;
             }
             case 5: {
+                seatingMap = createSeatingMap(venue, guestListManager);
                 break;
             }
             case 6: {
@@ -56,6 +65,7 @@ public class Main {
                 break;
             }
             case 9: {
+                printStats(guestCount, budget, taskManager, guestListManager, venue, seatingMap);
                 break;
             }
             default: {
@@ -63,21 +73,55 @@ public class Main {
                 break;
             }
         }
+        }
 
     }
 
-    private static void selectVenue(VenueSelector venueSelector, double budget, int guestCount) {
+    private static void printStats(int guestCount, double budget, TaskManager taskManager, GuestListManager guestListManager, Venue venue, Map<Integer, List<Guest>> seatingMap) {
+        System.out.println("Here are you current event stats!");
+        System.out.println("Guest count: " + guestCount);
+        System.out.println("Budget: " + budget);
+        if (!taskManager.getUpcomingTasks().isEmpty()) {
+            System.out.println("To do list:\n" + taskManager.getUpcomingTasks());
+        }
+        if (!taskManager.getCompletedTasks().isEmpty()) {
+            System.out.println("Completed tasks list:\n" + taskManager.getCompletedTasks());
+        }
+        if (!guestListManager.getAllGuests().isEmpty())
+            System.out.println("Guest list: \n" + guestListManager.getAllGuests());
+        if (venue != null) {
+            System.out.println("Venue: " + venue.getName() + "\n\tCost: " + venue.getCost() + "\n\tCapacity: " + venue.getCapacity() + "\n\tNumber of tables: " + venue.getTables() + "\n\tSeats per table: " + venue.getSeatsPerTable());
+        }
+        if (seatingMap != null) {
+            System.out.println("Seating map: \n" + seatingMap.toString());
+        }
+    }
+
+    private static Map<Integer, List<Guest>> createSeatingMap(Venue venue, GuestListManager guestListManager) {
+
+        if (venue == null) {
+            System.out.println("There is no venue selected. Please select option 4 to find your optimal venue first.");
+        } else {
+            SeatingPlanner seatingPlanner = new SeatingPlanner(venue);
+            Map<Integer, List<Guest>> seatingMap = seatingPlanner.generateSeating(guestListManager.getAllGuests());
+            System.out.println(seatingMap);
+            return seatingMap;
+        }
+        return null;
+    }
+
+    private static Venue selectVenue(VenueSelector venueSelector, double budget, int guestCount) {
         Venue optimal = venueSelector.selectVenue(budget, guestCount);
         if (optimal == null) {
             System.out.println("We're sorry, there is no venue large enough for your guest list and in your budget.");
-        }
-        else
+        } else
             System.out.println("The best venue for your budget and guest list is " + optimal.getName() + ", its capacity is " + optimal.getCapacity() + " and the total cost is " + optimal.getCost() + ".");
+        return optimal;
     }
 
     private static void undoTask(TaskManager taskManager) {
         Task task = taskManager.undoLastTask();
-        if(task == null)
+        if (task == null)
             System.out.println("There are no tasks currently completed.");
         System.out.println(task + " has been marked as undone and moved back from completed to your to do list.\nYou got this!");
     }
@@ -109,20 +153,18 @@ public class Main {
                 "9. Print event summary");
         System.out.println("Enter an option from the menu or -1 to exit: ");
         int choice = input.nextInt();
+        input.nextLine();
         while ((choice < 1 || choice > 9) && choice != -1) {
             System.out.println("Invalid option. Try again: ");
             choice = input.nextInt();
+            input.nextLine();
         }
         return choice;
     }
 
-    public static int getGuestCnt(Scanner input) {
-        System.out.println("Enter the number of guests your event will have: ");
-        return input.nextInt();
-    }
 
-    public static void loadSampleData(Scanner input) {
-        Generators.GenerateGuests(getGuestCnt(input));
+    public static void loadSampleData(Scanner input, int guestCount) {
+        Generators.GenerateGuests(guestCount);
     }
 
     public static void addGuest(GuestListManager guestListManager, Scanner input) {
@@ -139,15 +181,15 @@ public class Main {
         String guestName = input.nextLine();
         System.out.println("Enter guest tag:");
         String guestTag = input.nextLine();
-        boolean found = false;
-        while (!found) {
-            for (Guest g : guestListManager.getAllGuests()) {
-                if (g.getName().equals(guestName) && g.getGroupTag().equals(guestTag)) {
-                    guestListManager.removeGuest(g);
-                    found = true;
-                }
+        for (Guest g : guestListManager.getAllGuests()) {
+            if (g.getName().equals(guestName) &&
+                    g.getGroupTag().equals(guestTag)) {
+                guestListManager.removeGuest(g);
+                System.out.println("Guest removed.");
+                return;
             }
         }
+        System.out.println("Guest not found.");
     }
-
 }
+

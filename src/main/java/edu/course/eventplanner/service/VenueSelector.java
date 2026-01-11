@@ -21,8 +21,8 @@ public class VenueSelector {
         if (meetCriteria.isEmpty()) {
             return null;
         }
-        Collections.sort(meetCriteria, Comparator.comparing(Venue::getCost).thenComparing(Venue::getCost));
-        return venues.get(0);
+        Collections.sort(meetCriteria, Comparator.comparing(Venue::getCost).thenComparing(Venue::getCapacity));
+        return meetCriteria.get(0);
 
     }
 }

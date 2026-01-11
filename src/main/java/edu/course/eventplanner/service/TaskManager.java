@@ -5,11 +5,11 @@ import edu.course.eventplanner.model.Task;
 import java.util.*;
 
 public class TaskManager {
-    private final Queue<Task> upcoming = new LinkedList<>();
+    private final Deque<Task> upcoming = new LinkedList<>();
     private final Stack<Task> completed = new Stack<>();
 
     public Task addTask(Task task) {
-        upcoming.add(task);
+        upcoming.addLast(task);
         return task;
     }
 
@@ -18,7 +18,7 @@ public class TaskManager {
         if(task == null) {
             return null;
         }
-        upcoming.remove();
+        upcoming.removeFirst();
         completed.add(task);
         return task;
     }
@@ -28,11 +28,19 @@ public class TaskManager {
             return null;
         }
         Task task = completed.pop();
-        upcoming.add(task);
+        upcoming.addFirst(task);
         return task;
     }
 
     public int remainingTaskCount() {
         return upcoming.size();
+    }
+
+    public Queue<Task> getUpcomingTasks() {
+        return upcoming;
+    }
+
+    public Stack<Task> getCompletedTasks() {
+        return completed;
     }
 }
