@@ -211,6 +211,23 @@ public class EventPlannerTests {
         assertTrue(seating.isEmpty());
     }
 
+    @Test
+    public void menuExitOption() {
+        Scanner scanner = new Scanner("-1\n");
+        int result = Main.menu(scanner);
+        assertEquals(-1, result);
+    }
+        @Test
+        public void removeGuestFound() {
+            GuestListManager manager = new GuestListManager();
+            manager.addGuest(new Guest("Bob", "Family"));
 
-}
+            Scanner scanner = new Scanner("Bob\n");
+            Main.removeGuest(manager, scanner);
+
+            assertTrue(manager.getAllGuests().isEmpty());
+        }
+    }
+
+
 
