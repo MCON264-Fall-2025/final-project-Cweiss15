@@ -179,12 +179,9 @@ public class Main {
     public static void removeGuest(GuestListManager guestListManager, Scanner input) {
         System.out.println("Enter guest name:");
         String guestName = input.nextLine();
-        System.out.println("Enter guest tag:");
-        String guestTag = input.nextLine();
         for (Guest g : guestListManager.getAllGuests()) {
-            if (g.getName().equals(guestName) &&
-                    g.getGroupTag().equals(guestTag)) {
-                guestListManager.removeGuest(g);
+            if (g.getName().equals(guestName)) {
+                guestListManager.removeGuest(g.getName());
                 System.out.println("Guest removed.");
                 return;
             }

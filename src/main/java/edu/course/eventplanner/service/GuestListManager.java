@@ -9,10 +9,10 @@ public class GuestListManager {
     public void addGuest(Guest guest) {
         guests.add(guest);
     }
-    public boolean removeGuest(Guest guest) { guests.remove(guest);
+    public boolean removeGuest(String guestName) { guests.remove(guestName);
         for (Guest g : guests) {
-            if (g.equals(guest)) {
-                guests.remove(guest);
+            if (g.getName().equals(guestName)) {
+                guests.remove(g);
                 return true;
             }
         }
