@@ -176,5 +176,40 @@ public class EventPlannerTests {
         List<Guest> guests = Generators.GenerateGuests(guestCount);
         assertEquals(45, guests.size());
     }
+
+    @Test
+    public void undoWithNoCompletedTasks() {
+        TaskManager taskManager = new TaskManager();
+        Task undone = taskManager.undoLastTask();
+        assertTrue(taskManager.getCompletedTasks().isEmpty());
+        assertTrue(taskManager.getUpcomingTasks().isEmpty());
+        assertEquals(null, undone);
+    }
+
+    @Test
+    public void executeWithNoTasksTest() {
+        TaskManager taskManager = new TaskManager();
+        Task executed = taskManager.executeNextTask();
+        assertEquals(null, executed);
+        assertTrue(taskManager.getCompletedTasks().isEmpty());
+    }
+
+    @Test
+    public void removeNonExistentGuestTests() {
+        GuestListManager guestListManager = new GuestListManager();
+        guestListManager.addGuest(new Guest("Jack", "Friend"));
+        guestListManager.removeGuest("Jill");
+        assertEquals(1, guestListManager.getAllGuests().size());
+    }
+
+    @Test
+    public void seatingEmptyGuestListTest() {
+        Venue venue = new Venue("Community Hall",1500,40,5,8);
+        SeatingPlanner seatingPlanner = new SeatingPlanner(venue);
+        Map<Integer, List<Guest>> seating = seatingPlanner.generateSeating(new ArrayList<>());
+        assertTrue(seating.isEmpty());
+    }
+
+
 }
 
