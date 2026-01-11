@@ -6,7 +6,12 @@ import java.util.*;
 public class GuestListManager {
     private final LinkedList<Guest> guests = new LinkedList<>();
     private final Map<String, Guest> guestByName = new HashMap<>();
-    public void addGuest(Guest guest) { guests.add(guest); }
+    public void addGuest(Guest guest) {
+        guests.add(guest);
+    }
+    public void addGuest(String name, String tag) {
+        Guest guest = new Guest(name,tag);
+        guests.add(guest); }
     public boolean removeGuest(Guest guest) { guests.remove(guest);
         for (Guest g : guests) {
             if (g.equals(guest)) {
