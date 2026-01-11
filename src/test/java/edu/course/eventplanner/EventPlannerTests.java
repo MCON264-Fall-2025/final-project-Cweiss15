@@ -141,5 +141,40 @@ public class EventPlannerTests {
         assertEquals(6, seatingMap.get(0).size());
         assertEquals(0, seatingMap.get(1).size());
     }
+
+    @Test
+    public void seatingTwoTablesSameTagsTest() {
+        Venue venue = new Venue("Community Hall",1500,40,5,8);
+        List<Guest> guests = new LinkedList<>();
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        guests.add(new Guest("Jane", "Friend"));
+        SeatingPlanner seatingPlanner = new SeatingPlanner(venue);
+        Map<Integer, List<Guest>> seatingMap = seatingPlanner.generateSeating(guests);
+        assertEquals(8, seatingMap.get(0).size());
+        assertEquals(2, seatingMap.get(1).size());
+    }
+
+    @Test
+    public void generateVenuesTest() {
+        Generators generator = new Generators();
+        List <Venue> venues = generator.generateVenues();
+        assertEquals(3, venues.size());
+    }
+
+    @Test
+    public void generateGuestsTest() {
+        int guestCount = 45;
+        Generators generator = new Generators();
+        List<Guest> guests = Generators.GenerateGuests(guestCount);
+        assertEquals(45, guests.size());
+    }
 }
 
