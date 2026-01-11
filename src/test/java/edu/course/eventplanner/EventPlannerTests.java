@@ -227,6 +227,27 @@ public class EventPlannerTests {
 
             assertTrue(manager.getAllGuests().isEmpty());
         }
+
+    @Test
+    public void addTaskAddsTask() {
+        TaskManager manager = new TaskManager();
+        Scanner scanner = new Scanner("Book venue\n");
+
+        Main.addTask(scanner, manager);
+
+        assertEquals(1, manager.getUpcomingTasks().size());
+    }
+
+    @Test
+    public void MainUndoWithNoCompletedTasks() {
+        TaskManager taskManager = new TaskManager();
+        Task task = new Task("task");
+        taskManager.addTask(task);
+        Main.undoTask(taskManager);
+        List<Task> tasks = taskManager.getCompletedTasks();
+        assertTrue(taskManager.getCompletedTasks().isEmpty());
+        assertTrue(taskManager.getUpcomingTasks().size()==1);
+    }
     }
 
 

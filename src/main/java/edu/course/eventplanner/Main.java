@@ -119,7 +119,7 @@ public class Main {
         return optimal;
     }
 
-    private static void undoTask(TaskManager taskManager) {
+    public static void undoTask(TaskManager taskManager) {
         Task task = taskManager.undoLastTask();
         if (task == null)
             System.out.println("There are no tasks currently completed.");
@@ -134,7 +134,7 @@ public class Main {
         System.out.println(task + " has been successfully moved from to do to completed list. Nice job!");
     }
 
-    private static void addTask(Scanner input, TaskManager taskManager) {
+    public static void addTask(Scanner input, TaskManager taskManager) {
         System.out.println("Enter task description to add to task list: ");
         String task = input.nextLine();
         Task newTask = new Task(task);
