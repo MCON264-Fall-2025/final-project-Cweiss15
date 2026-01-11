@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventPlannerTests {
+    //done
     @Test
     public void testAddGuest() {
         GuestListManager guestListManager = new GuestListManager();
