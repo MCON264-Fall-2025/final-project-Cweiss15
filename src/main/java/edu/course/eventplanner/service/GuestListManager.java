@@ -9,12 +9,6 @@ public class GuestListManager {
     public void addGuest(Guest guest) {
         guests.add(guest);
     }
-    public void addGuest(String name, String tag) {
-        Guest guest = new Guest(name,tag);
-        guests.add(guest); }
-    public void addGuest(String name) {
-        addGuest(new Guest(name, "default"));
-    }
     public boolean removeGuest(Guest guest) { guests.remove(guest);
         for (Guest g : guests) {
             if (g.equals(guest)) {
