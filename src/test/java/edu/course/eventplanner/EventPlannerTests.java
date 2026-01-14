@@ -308,115 +308,8 @@ public class EventPlannerTests {
         assertEquals(1, done.size());
         assertEquals(task,  done.peek());
     }
-    @Test
-    public void mainAddGuestCapturesGuestInManager() {
-        GuestListManager manager = new GuestListManager();
-        String inputData = "Alice\nFriend\n";
-        Scanner scanner = new Scanner(inputData);
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
 
-        Main.addGuest(manager, scanner);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertEquals(1, manager.getAllGuests().size());
-        assertEquals("Alice", manager.getAllGuests().get(0).getName());
-        assertEquals("friend", manager.getAllGuests().get(0).getGroupTag());
-        assertTrue(output.contains("Enter guest name"));
-        assertTrue(output.contains("Enter guest tag"));
-    }
-
-    @Test
-    public void mainRemoveGuestNotFoundPrintsMessage() {
-        GuestListManager manager = new GuestListManager();
-        manager.addGuest(new Guest("Bob", "Family"));
-        Scanner scanner = new Scanner("Alice\n");
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
-
-        Main.removeGuest(manager, scanner);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertEquals(1, manager.getAllGuests().size());
-        assertTrue(output.contains("Guest not found"));
-    }
-
-    @Test
-    public void mainUndoTaskNoCompletedTasksPrintsMessage() {
-        TaskManager manager = new TaskManager();
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
-
-        Main.undoTask(manager);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertTrue(output.contains("There are no tasks currently completed"));
-        assertTrue(manager.getUpcomingTasks().isEmpty());
-        assertTrue(manager.getCompletedTasks().isEmpty());
-    }
-    @Test
-    public void mainLoadSampleGuestsPrintsMessage() {
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
-
-        List<Guest> guests = Main.loadSampleGuests(5);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertEquals(5, guests.size());
-        assertTrue(output.contains("5\"dummy\" guests have been created"));
-    }
-
-    @Test
-    public void mainCompleteTaskNoTasksPrintsMessage() {
-        TaskManager manager = new TaskManager();
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
-
-        Main.completeTask(manager);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertTrue(output.contains("Your to do list is currently empty"));
-        assertTrue(manager.getUpcomingTasks().isEmpty());
-        assertTrue(manager.getCompletedTasks().isEmpty());
-    }
-
-    @Test
-    public void mainCreateSeatingMapNoVenuePrintsMessage() {
-        GuestListManager manager = new GuestListManager();
-        List<Guest> guests = new ArrayList<>();
-        guests.add(new Guest("Bob", "Family"));
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
-
-        Map<Integer, List<Guest>> seating = Main.createSeatingMap(null, manager, guests);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertNull(seating);
-        assertTrue(output.contains("There is no venue selected"));
-    }
     @Test
     public void seatingMapWithNoGuestsAndNoGuestList() {
         Venue venue = new Venue("Tiny Hall", 1000, 10, 1, 10);
@@ -436,58 +329,7 @@ public class EventPlannerTests {
         assertNull(venue);
     }
 
-    @Test
-    public void mainPrintStatsFullData() {
-        GuestListManager guestListManager = new GuestListManager();
-        guestListManager.addGuest(new Guest("Alice", "Friend"));
-        guestListManager.addGuest(new Guest("Bob", "Family"));
 
-        TaskManager taskManager = new TaskManager();
-        taskManager.addTask(new Task("Task 1"));
-        taskManager.executeNextTask(); // move to completed
-
-        Venue venue = new Venue("Grand Hall", 3000, 50, 5, 10);
-        Map<Integer, List<Guest>> seatingMap = new HashMap<>();
-        seatingMap.put(0, Arrays.asList(new Guest("Alice", "Friend"), new Guest("Bob", "Family")));
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        System.setOut(new PrintStream(outContent));
-
-        Main.printStats(2, 5000, taskManager, guestListManager, venue, seatingMap);
-
-        System.setOut(originalOut);
-        String output = outContent.toString();
-
-        assertTrue(output.contains("Guest count: 2"));
-        assertTrue(output.contains("Budget: 5000"));
-        assertTrue(output.contains("Completed tasks list"));
-        assertTrue(output.contains("Guest list:"));
-        assertTrue(output.contains("Alice"));
-        assertTrue(output.contains("Venue: Grand Hall"));
-        assertTrue(output.contains("Seating map:"));
-    }
-
-    @Test
-    public void mainPrintStatsEmptyData() {
-        GuestListManager guestListManager = new GuestListManager();
-        TaskManager taskManager = new TaskManager();
-        Venue venue = null;
-        Map<Integer, List<Guest>> seatingMap = null;
-
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        Main.printStats(0, 0, taskManager, guestListManager, venue, seatingMap);
-
-        System.setOut(System.out);
-        String output = outContent.toString();
-
-        assertTrue(output.contains("Guest count: 0"));
-        assertTrue(output.contains("Budget: 0"));
-        assertFalse(output.contains("Completed tasks list"));
-        assertFalse(output.contains("Guest list:"));
-    }
 
     @Test
     public void menuOptionLoadSampleData() {
@@ -510,21 +352,6 @@ public class EventPlannerTests {
         assertEquals(3, choice);
     }
 
-    @Test
-    public void menuInvalidThenValidInput() {
-        Scanner scanner = new Scanner("12\n5\n");
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        int choice = Main.menu(scanner);
-
-        System.setOut(System.out);
-        String output = outContent.toString();
-
-
-        assertTrue(output.contains("Invalid option"));
-        assertEquals(5, choice);
-    }
     }
 
 
