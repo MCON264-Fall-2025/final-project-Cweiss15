@@ -332,26 +332,67 @@ public class EventPlannerTests {
 
 
     @Test
-    public void menuOptionLoadSampleData() {
+    public void menuOptionTest1() {
         Scanner scanner = new Scanner("1\n");
         int choice = Main.menu(scanner);
         assertEquals(1, choice);
     }
 
     @Test
-    public void menuOptionAddGuest() {
+    public void menuOptionTest2() {
         Scanner scanner = new Scanner("2\n");
         int choice = Main.menu(scanner);
         assertEquals(2, choice);
     }
 
     @Test
-    public void menuOptionRemoveGuest() {
+    public void menuOptionTest3() {
         Scanner scanner = new Scanner("3\n");
         int choice = Main.menu(scanner);
         assertEquals(3, choice);
     }
 
+    @Test
+    public void menuOptionTest4() {
+        Scanner scanner = new Scanner("4\n");
+        int choice = Main.menu(scanner);
+        assertEquals(4, choice);
+    }
+
+    @Test
+    public void menuOptionTest5() {
+        Scanner scanner = new Scanner("5\n");
+        int choice = Main.menu(scanner);
+        assertEquals(5, choice);
+    }
+
+    @Test
+    public void menuOptionTest6() {
+        Scanner scanner = new Scanner("6\n");
+        int choice = Main.menu(scanner);
+        assertEquals(6, choice);
+    }
+
+    @Test
+    public void menuOptionTest7() {
+        Scanner scanner = new Scanner("7\n");
+        int choice = Main.menu(scanner);
+        assertEquals(7, choice);
+    }
+
+    @Test
+    public void menuOptionTest8() {
+        Scanner scanner = new Scanner("8\n");
+        int choice = Main.menu(scanner);
+        assertEquals(8, choice);
+    }
+
+    @Test
+    public void menuOptionTest9() {
+        Scanner scanner = new Scanner("9\n");
+        int choice = Main.menu(scanner);
+        assertEquals(9, choice);
+    }
     }
 
 
