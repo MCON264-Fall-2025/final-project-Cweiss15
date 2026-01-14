@@ -143,7 +143,7 @@ public class Main {
         }
     }
 
-    private static Venue selectVenue(VenueSelector venueSelector, double budget, int guestCount) {
+    public static Venue selectVenue(VenueSelector venueSelector, double budget, int guestCount) {
         Venue optimal = venueSelector.selectVenue(budget, guestCount);
         if (optimal == null) {
             System.out.println("We're sorry, there is no venue large enough for your guest list and in your budget.");
@@ -160,7 +160,7 @@ public class Main {
             System.out.println(task + " has been removed from your completed task list.\nYou got this!");
     }
 
-    private static void completeTask(TaskManager taskManager) {
+    public static void completeTask(TaskManager taskManager) {
         Task task = taskManager.executeNextTask();
         if (task == null) {
             System.out.println("Your to do list is currently empty. Hurray!");

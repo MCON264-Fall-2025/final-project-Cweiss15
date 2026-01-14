@@ -280,6 +280,31 @@ public class EventPlannerTests {
         assertEquals(8, seatingMap.get(0).size());
         assertEquals(8, seatingMap.get(4).size());
     }
+    @Test
+    public void MainSelectVenueTest() {
+        int budget = 2500;
+        int guests = 55;
+        VenueSelector venueSelector = new VenueSelector(Generators.generateVenues());
+        Venue venue = Main.selectVenue(venueSelector, budget, guests);
+        assertEquals("Garden Hall", venue.getName());
+    }
+
+    @Test
+    public void MainExecuteTask() {
+        TaskManager  taskManager = new TaskManager();
+        Task task = new Task("Make guest list");
+        Task task2 = new Task("Make seating chart");
+        taskManager.addTask(task);
+        taskManager.addTask(task2);
+        Queue<Task> tasks = taskManager.getUpcomingTasks();
+        assertEquals(2, tasks.size());
+        Main.completeTask(taskManager);
+        assertEquals(1, tasks.size());
+        assertEquals(task2, tasks.poll());
+        Stack<Task> done = taskManager.getCompletedTasks();
+        assertEquals(1, done.size());
+        assertEquals(task,  done.peek());
+    }
 
     }
 
