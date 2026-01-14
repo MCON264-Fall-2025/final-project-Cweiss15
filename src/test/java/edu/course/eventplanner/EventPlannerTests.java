@@ -10,6 +10,9 @@ import edu.course.eventplanner.service.VenueSelector;
 import edu.course.eventplanner.util.Generators;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -304,6 +307,78 @@ public class EventPlannerTests {
         Stack<Task> done = taskManager.getCompletedTasks();
         assertEquals(1, done.size());
         assertEquals(task,  done.peek());
+    }
+    @Test
+    public void mainAddGuestCapturesGuestInManager() {
+        GuestListManager manager = new GuestListManager();
+        String inputData = "Alice\nFriend\n";
+        Scanner scanner = new Scanner(inputData);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        Main.addGuest(manager, scanner);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertEquals(1, manager.getAllGuests().size());
+        assertEquals("Alice", manager.getAllGuests().get(0).getName());
+        assertEquals("friend", manager.getAllGuests().get(0).getGroupTag());
+        assertTrue(output.contains("Enter guest name"));
+        assertTrue(output.contains("Enter guest tag"));
+    }
+
+    @Test
+    public void mainRemoveGuestNotFoundPrintsMessage() {
+        GuestListManager manager = new GuestListManager();
+        manager.addGuest(new Guest("Bob", "Family"));
+        Scanner scanner = new Scanner("Alice\n");
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        Main.removeGuest(manager, scanner);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertEquals(1, manager.getAllGuests().size());
+        assertTrue(output.contains("Guest not found"));
+    }
+
+    @Test
+    public void mainUndoTaskNoCompletedTasksPrintsMessage() {
+        TaskManager manager = new TaskManager();
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        Main.undoTask(manager);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertTrue(output.contains("There are no tasks currently completed"));
+        assertTrue(manager.getUpcomingTasks().isEmpty());
+        assertTrue(manager.getCompletedTasks().isEmpty());
+    }
+    @Test
+    public void mainLoadSampleGuestsPrintsMessage() {
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        List<Guest> guests = Main.loadSampleGuests(5);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertEquals(5, guests.size());
+        assertTrue(output.contains("5\"dummy\" guests have been created"));
     }
 
     }
