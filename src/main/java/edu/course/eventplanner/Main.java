@@ -78,7 +78,7 @@ public class Main {
 
     }
 
-    private static void printStats(int guestCount, double budget, TaskManager taskManager, GuestListManager guestListManager, Venue venue, Map<Integer, List<Guest>> seatingMap) {
+    public static void printStats(int guestCount, double budget, TaskManager taskManager, GuestListManager guestListManager, Venue venue, Map<Integer, List<Guest>> seatingMap) {
         System.out.println("Here are you current event stats!");
         System.out.println("Guest count: " + guestCount);
         System.out.println("Budget: " + budget);

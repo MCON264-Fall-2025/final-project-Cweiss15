@@ -381,6 +381,150 @@ public class EventPlannerTests {
         assertTrue(output.contains("5\"dummy\" guests have been created"));
     }
 
+    @Test
+    public void mainCompleteTaskNoTasksPrintsMessage() {
+        TaskManager manager = new TaskManager();
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        Main.completeTask(manager);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertTrue(output.contains("Your to do list is currently empty"));
+        assertTrue(manager.getUpcomingTasks().isEmpty());
+        assertTrue(manager.getCompletedTasks().isEmpty());
+    }
+
+    @Test
+    public void mainCreateSeatingMapNoVenuePrintsMessage() {
+        GuestListManager manager = new GuestListManager();
+        List<Guest> guests = new ArrayList<>();
+        guests.add(new Guest("Bob", "Family"));
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        Map<Integer, List<Guest>> seating = Main.createSeatingMap(null, manager, guests);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertNull(seating);
+        assertTrue(output.contains("There is no venue selected"));
+    }
+    @Test
+    public void seatingMapWithNoGuestsAndNoGuestList() {
+        Venue venue = new Venue("Tiny Hall", 1000, 10, 1, 10);
+        GuestListManager manager = new GuestListManager();
+        List<Guest> guests = new ArrayList<>();
+
+        Map<Integer, List<Guest>> seatingMap = Main.createSeatingMap(venue, manager, guests);
+
+        assertNull(seatingMap);
+    }
+
+    @Test
+    public void mainSelectVenueNoOptionsWithinBudget() {
+        VenueSelector venueSelector = new VenueSelector(Generators.generateVenues());
+        Venue venue = Main.selectVenue(venueSelector, 100, 100); // impossible budget/guests
+
+        assertNull(venue);
+    }
+
+    @Test
+    public void mainPrintStatsFullData() {
+        GuestListManager guestListManager = new GuestListManager();
+        guestListManager.addGuest(new Guest("Alice", "Friend"));
+        guestListManager.addGuest(new Guest("Bob", "Family"));
+
+        TaskManager taskManager = new TaskManager();
+        taskManager.addTask(new Task("Task 1"));
+        taskManager.executeNextTask(); // move to completed
+
+        Venue venue = new Venue("Grand Hall", 3000, 50, 5, 10);
+        Map<Integer, List<Guest>> seatingMap = new HashMap<>();
+        seatingMap.put(0, Arrays.asList(new Guest("Alice", "Friend"), new Guest("Bob", "Family")));
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+
+        Main.printStats(2, 5000, taskManager, guestListManager, venue, seatingMap);
+
+        System.setOut(originalOut);
+        String output = outContent.toString();
+
+        assertTrue(output.contains("Guest count: 2"));
+        assertTrue(output.contains("Budget: 5000"));
+        assertTrue(output.contains("Completed tasks list"));
+        assertTrue(output.contains("Guest list:"));
+        assertTrue(output.contains("Alice"));
+        assertTrue(output.contains("Venue: Grand Hall"));
+        assertTrue(output.contains("Seating map:"));
+    }
+
+    @Test
+    public void mainPrintStatsEmptyData() {
+        GuestListManager guestListManager = new GuestListManager();
+        TaskManager taskManager = new TaskManager();
+        Venue venue = null;
+        Map<Integer, List<Guest>> seatingMap = null;
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        Main.printStats(0, 0, taskManager, guestListManager, venue, seatingMap);
+
+        System.setOut(System.out);
+        String output = outContent.toString();
+
+        assertTrue(output.contains("Guest count: 0"));
+        assertTrue(output.contains("Budget: 0"));
+        assertFalse(output.contains("Completed tasks list"));
+        assertFalse(output.contains("Guest list:"));
+    }
+
+    @Test
+    public void menuOptionLoadSampleData() {
+        Scanner scanner = new Scanner("1\n");
+        int choice = Main.menu(scanner);
+        assertEquals(1, choice);
+    }
+
+    @Test
+    public void menuOptionAddGuest() {
+        Scanner scanner = new Scanner("2\n");
+        int choice = Main.menu(scanner);
+        assertEquals(2, choice);
+    }
+
+    @Test
+    public void menuOptionRemoveGuest() {
+        Scanner scanner = new Scanner("3\n");
+        int choice = Main.menu(scanner);
+        assertEquals(3, choice);
+    }
+
+    @Test
+    public void menuInvalidThenValidInput() {
+        Scanner scanner = new Scanner("12\n5\n");
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        int choice = Main.menu(scanner);
+
+        System.setOut(System.out);
+        String output = outContent.toString();
+
+
+        assertTrue(output.contains("Invalid option"));
+        assertEquals(5, choice);
+    }
     }
 
 
