@@ -82,7 +82,13 @@ jobs:
           command: "mvn -B -ntp test jacoco:report && python3 .github/scripts/check_coverage.py"
           timeout: 15
           max-score: 15
-
+      - name: Upload JaCoCo HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html-report
+          path: target/site/jacoco/
+          retention-days: 7
       - name: README Documentation
         id: readme-documentation
         uses: classroom-resources/autograding-command-grader@v1
