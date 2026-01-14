@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EventPlannerTests {
     //done
@@ -248,7 +247,43 @@ public class EventPlannerTests {
         assertTrue(taskManager.getCompletedTasks().isEmpty());
         assertTrue(taskManager.getUpcomingTasks().size()==1);
     }
+    @Test
+    public void MainLoadSampleGuestsTest() {
+        List<Guest> guests = Main.loadSampleGuests(45);
+        assertEquals(45, guests.size());
     }
+
+    @Test
+    public void MainSeatingMapCustomGuestListOverridesTest() {
+        Venue venue = new Venue("Community Hall",1500,40,5,8);
+        GuestListManager guestListManager = new GuestListManager();
+        guestListManager.addGuest(new Guest("Jack", "Friend"));
+        guestListManager.addGuest(new Guest("Bob", "Family"));
+        guestListManager.addGuest(new Guest("Bob", "Family"));
+        guestListManager.addGuest(new Guest("Bob", "Family"));
+        guestListManager.addGuest(new Guest("Bob", "Family"));
+        List<Guest> guests = Main.loadSampleGuests(45);
+        assertEquals(45, guests.size());
+        Map<Integer, List<Guest>> seatingMap = Main.createSeatingMap(venue, guestListManager, guests);
+        assertEquals(5, seatingMap.get(0).size());
+        assertTrue(seatingMap.get(1).isEmpty());
+        assertEquals("Bob", seatingMap.get(0).getFirst().getName());
+    }
+    @Test
+    public void MainSeatingMapGeneratedListUsedIfNoGuestListTest() {
+        Venue venue = new Venue("Community Hall",1500,40,5,8);
+        GuestListManager guestListManager = new GuestListManager();
+        List<Guest> guests = Main.loadSampleGuests(40);
+        assertEquals(40, guests.size());
+        Map<Integer, List<Guest>> seatingMap = Main.createSeatingMap(venue, guestListManager, guests);
+        assertFalse(seatingMap.isEmpty());
+        assertEquals(8, seatingMap.get(0).size());
+        assertEquals(8, seatingMap.get(4).size());
+    }
+
+    }
+
+
 
 
 
